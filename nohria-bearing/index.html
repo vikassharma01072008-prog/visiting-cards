@@ -52,6 +52,7 @@ img{max-width:100%;display:block}
 
 /* ============================================================
    STAGE — Tractor sunset opening
+   MOBILE-FRIENDLY: uses contain on mobile so full image shows
    ============================================================ */
 #stage{
   position:fixed;
@@ -70,6 +71,7 @@ img{max-width:100%;display:block}
   will-change:transform;
 }
 
+/* Background blurred layer */
 .layer-sky{
   position:absolute;
   inset:-10%;
@@ -79,15 +81,25 @@ img{max-width:100%;display:block}
   will-change:transform;
 }
 
+/* Foreground crisp layer — MOBILE: contain, DESKTOP: cover */
 .layer-tractor{
   position:absolute;
   inset:0;
-  background:url('bearing.png') center center / cover no-repeat;
+  background:url('bearing.png') center center / contain no-repeat;
+  background-color:#050806;
   filter:brightness(.95) saturate(1.2) contrast(1.06);
   will-change:transform,opacity;
   opacity:0;
 }
 
+/* Desktop uses cover for cinematic full-bleed */
+@media(min-width:640px){
+  .layer-tractor{
+    background-size:cover;
+  }
+}
+
+/* Warm golden overlay */
 .layer-warm{
   position:absolute;
   inset:0;
@@ -277,7 +289,7 @@ img{max-width:100%;display:block}
 }
 
 /* ============================================================
-   CARD — deep charcoal-green base so green logo pops
+   CARD
    ============================================================ */
 .card{
   display:inline-block;
@@ -334,9 +346,7 @@ img{max-width:100%;display:block}
 
 .card > *{position:relative;z-index:2}
 
-/* ============================================================
-   LOGO — with soft light halo so green pops
-   ============================================================ */
+/* LOGO */
 .card-logo-wrap{
   position:relative;
   width:130px;
@@ -352,7 +362,6 @@ img{max-width:100%;display:block}
   100%{opacity:1;transform:scale(1) rotate(0deg)}
 }
 
-/* Rotating gold ring */
 .card-logo-wrap::before{
   content:"";
   position:absolute;
@@ -367,7 +376,6 @@ img{max-width:100%;display:block}
 }
 @keyframes ringSpin{to{transform:rotate(360deg)}}
 
-/* Soft radial glow behind logo — makes green pop */
 .card-logo-wrap::after{
   content:"";
   position:absolute;
@@ -388,7 +396,6 @@ img{max-width:100%;display:block}
   50%{opacity:1;transform:scale(1.18)}
 }
 
-/* Cream circular badge behind the logo */
 .card-logo{
   position:relative;
   width:100%;
@@ -404,7 +411,6 @@ img{max-width:100%;display:block}
   50%{transform:translateY(-3px)}
 }
 
-/* Soft cream disc behind logo */
 .card-logo::before{
   content:"";
   position:absolute;
@@ -432,9 +438,7 @@ img{max-width:100%;display:block}
     drop-shadow(0 2px 6px rgba(0,0,0,.2));
 }
 
-/* ============================================================
-   NAME
-   ============================================================ */
+/* NAME */
 .card-name{
   text-align:center;
   font-family:'Playfair Display',Georgia,serif;
@@ -507,7 +511,6 @@ img{max-width:100%;display:block}
   animation:fadeUp .9s cubic-bezier(.2,.9,.3,1.05) .55s both;
 }
 
-/* HOURS */
 .hours-block{
   background:linear-gradient(135deg,rgba(212,160,23,.08),rgba(212,160,23,.02));
   border:1px solid rgba(212,160,23,.25);
@@ -553,7 +556,6 @@ img{max-width:100%;display:block}
   letter-spacing:.5px;
 }
 
-/* DIVIDER */
 .card-divider{
   display:flex;
   align-items:center;
@@ -577,7 +579,6 @@ img{max-width:100%;display:block}
   text-transform:uppercase;
 }
 
-/* CONTACT */
 .contact-block{
   background:linear-gradient(135deg,rgba(61,122,46,.14),rgba(212,160,23,.04));
   border:1px solid rgba(125,201,96,.3);
@@ -668,7 +669,6 @@ img{max-width:100%;display:block}
 }
 .btn-wa:active{transform:translateY(0) scale(.97)}
 
-/* ALT */
 .alt-block{
   background:rgba(245,240,224,.04);
   border:1px dashed rgba(212,160,23,.35);
@@ -702,7 +702,6 @@ img{max-width:100%;display:block}
   text-shadow:0 0 15px rgba(240,193,75,.6);
 }
 
-/* EMAIL */
 .email-block{
   display:flex;
   align-items:center;
@@ -729,7 +728,6 @@ img{max-width:100%;display:block}
 }
 .email-block svg{width:16px;height:16px;color:var(--gold);flex-shrink:0}
 
-/* BRANDS */
 .brands-label{
   font-family:'JetBrains Mono',monospace;
   font-size:10px;
@@ -787,7 +785,6 @@ img{max-width:100%;display:block}
   transform:translateY(-2px);
 }
 
-/* ADDRESS */
 .address-block{
   background:linear-gradient(135deg,rgba(212,160,23,.07),transparent);
   border:1px dashed rgba(212,160,23,.4);
@@ -832,7 +829,6 @@ img{max-width:100%;display:block}
 }
 .map-btn svg{width:14px;height:14px}
 
-/* SHARE */
 .share-row{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -876,7 +872,6 @@ img{max-width:100%;display:block}
 .share-btn:hover svg{color:var(--gold-bright);transform:scale(1.1)}
 .share-btn:active{transform:scale(.96)}
 
-/* FOOTER */
 .card-footer{
   text-align:center;
   padding-top:16px;
