@@ -42,6 +42,7 @@ body.locked{overflow:hidden;height:100vh;height:100dvh;position:fixed;width:100%
   --green:#3d7a2e;
   --green-bright:#5fa844;
   --green-hot:#7dc960;
+  --red:#e11d2a;
   --line:rgba(212,160,23,.25);
   --line-soft:rgba(245,240,224,.08);
 }
@@ -51,8 +52,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 img{max-width:100%;display:block}
 
 /* ============================================================
-   STAGE — Tractor sunset opening
-   MOBILE-FRIENDLY: uses contain on mobile so full image shows
+   STAGE — Tractor sunset opening (mobile-friendly)
    ============================================================ */
 #stage{
   position:fixed;
@@ -71,7 +71,6 @@ img{max-width:100%;display:block}
   will-change:transform;
 }
 
-/* Background blurred layer */
 .layer-sky{
   position:absolute;
   inset:-10%;
@@ -81,7 +80,7 @@ img{max-width:100%;display:block}
   will-change:transform;
 }
 
-/* Foreground crisp layer — MOBILE: contain, DESKTOP: cover */
+/* Foreground crisp — mobile: contain, desktop: cover */
 .layer-tractor{
   position:absolute;
   inset:0;
@@ -92,14 +91,12 @@ img{max-width:100%;display:block}
   opacity:0;
 }
 
-/* Desktop uses cover for cinematic full-bleed */
 @media(min-width:640px){
   .layer-tractor{
     background-size:cover;
   }
 }
 
-/* Warm golden overlay */
 .layer-warm{
   position:absolute;
   inset:0;
@@ -511,6 +508,7 @@ img{max-width:100%;display:block}
   animation:fadeUp .9s cubic-bezier(.2,.9,.3,1.05) .55s both;
 }
 
+/* HOURS */
 .hours-block{
   background:linear-gradient(135deg,rgba(212,160,23,.08),rgba(212,160,23,.02));
   border:1px solid rgba(212,160,23,.25);
@@ -555,7 +553,16 @@ img{max-width:100%;display:block}
   color:var(--gold-bright);
   letter-spacing:.5px;
 }
+.hours-row.closed .time{
+  color:#ff8b8b;
+}
+.hours-row + .hours-row{
+  border-top:1px solid rgba(245,240,224,.05);
+  padding-top:8px;
+  margin-top:5px;
+}
 
+/* DIVIDER */
 .card-divider{
   display:flex;
   align-items:center;
@@ -579,6 +586,7 @@ img{max-width:100%;display:block}
   text-transform:uppercase;
 }
 
+/* CONTACT */
 .contact-block{
   background:linear-gradient(135deg,rgba(61,122,46,.14),rgba(212,160,23,.04));
   border:1px solid rgba(125,201,96,.3);
@@ -669,6 +677,7 @@ img{max-width:100%;display:block}
 }
 .btn-wa:active{transform:translateY(0) scale(.97)}
 
+/* ALT */
 .alt-block{
   background:rgba(245,240,224,.04);
   border:1px dashed rgba(212,160,23,.35);
@@ -702,6 +711,7 @@ img{max-width:100%;display:block}
   text-shadow:0 0 15px rgba(240,193,75,.6);
 }
 
+/* EMAIL */
 .email-block{
   display:flex;
   align-items:center;
@@ -728,6 +738,7 @@ img{max-width:100%;display:block}
 }
 .email-block svg{width:16px;height:16px;color:var(--gold);flex-shrink:0}
 
+/* BRANDS */
 .brands-label{
   font-family:'JetBrains Mono',monospace;
   font-size:10px;
@@ -785,6 +796,7 @@ img{max-width:100%;display:block}
   transform:translateY(-2px);
 }
 
+/* ADDRESS */
 .address-block{
   background:linear-gradient(135deg,rgba(212,160,23,.07),transparent);
   border:1px dashed rgba(212,160,23,.4);
@@ -829,6 +841,7 @@ img{max-width:100%;display:block}
 }
 .map-btn svg{width:14px;height:14px}
 
+/* SHARE */
 .share-row{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -872,6 +885,7 @@ img{max-width:100%;display:block}
 .share-btn:hover svg{color:var(--gold-bright);transform:scale(1.1)}
 .share-btn:active{transform:scale(.96)}
 
+/* FOOTER */
 .card-footer{
   text-align:center;
   padding-top:16px;
@@ -988,8 +1002,12 @@ img{max-width:100%;display:block}
     <div class="hours-block">
       <div class="hours-label">Business Hours</div>
       <div class="hours-row">
-        <span class="day">Open Daily</span>
-        <span class="time">9:45 AM – 7:45 PM</span>
+        <span class="day">Mon – Sat</span>
+        <span class="time">9:30 AM – 8:00 PM</span>
+      </div>
+      <div class="hours-row closed">
+        <span class="day">Sunday</span>
+        <span class="time">Closed</span>
       </div>
     </div>
 
@@ -1035,11 +1053,11 @@ img{max-width:100%;display:block}
       <div class="brand-item">MENON PISTON</div>
       <div class="brand-item">RANE</div>
       <div class="brand-item">NBC</div>
-      <div class="brand-item">DP BEARINGS</div>
+      <div class="brand-item">DPI BEARINGS</div>
       <div class="brand-item">PUROLATOR</div>
       <div class="brand-item">EICHER</div>
       <div class="brand-item">DEMM</div>
-      <div class="brand-item">C.M.P.</div>
+      <div class="brand-item">C.W.P.</div>
       <div class="brand-item">GEAR PARTS</div>
     </div>
 
@@ -1049,7 +1067,7 @@ img{max-width:100%;display:block}
         Opp. Red Cross Market, G.T. Road,<br>
         Karnal — 132001, Haryana
       </div>
-      <a href="https://maps.app.goo.gl/stgMY91mXaPQHTMu8" class="map-btn" target="_blank" rel="noopener">
+      <a href="https://maps.app.goo.gl/rgCETx5s1dBSdrqm6" class="map-btn" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
           <circle cx="12" cy="10" r="3"/>
@@ -1685,7 +1703,7 @@ function saveContact(){
     "TEL;TYPE=CELL,VOICE:+919896378207",
     "EMAIL;TYPE=WORK:nohriabearingco@yahoo.com",
     "URL:https://visiting-cards-5s9.pages.dev/nohria-bearing",
-    "NOTE:Nohria Bearing Co. — Bearings, Tractor Parts & Spare Distributor. Opp. Red Cross Market, G.T. Road, Karnal. Open 9:45 AM - 7:45 PM daily.",
+    "NOTE:Nohria Bearing Co. — Bearings, Tractor Parts & Spare Distributor. Opp. Red Cross Market, G.T. Road, Karnal. Open Mon-Sat 9:30 AM - 8:00 PM, Sunday Closed.",
     "ADR;TYPE=WORK:;;Opp. Red Cross Market, G.T. Road;Karnal;Haryana;132001;India",
     "END:VCARD"
   ].join("\r\n");
