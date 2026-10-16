@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#0a0605" />
+<title>Malhotra Jewellers</title>
+<meta name="description" content="Malhotra Jewellers — Fine Gold, Diamond & Silver Jewellery." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink-900:#0a0605;
+  --ink-800:#140c07;
+  --ink-700:#1f130b;
+  --gold:#d4a017;
+  --gold-bright:#f0c14b;
+  --gold-shine:#ffd966;
+  --gold-deep:#a67c0f;
+  --cream:#f5ede0;
+  --silver:#c9bfae;
+  --green:#25D366;
+  --green-dark:#128C4A;
+  --ruby:#8b1e28;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{
+  background:var(--ink-900);
+  color:var(--cream);
+  font-family:'Inter',sans-serif;
+  min-height:100%;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+body.locked{overflow:hidden;height:100vh;}
+
+/* ============================================================
+   STAGE
+   ============================================================ */
+#stage{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:#000;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#stage.hidden{opacity:0;pointer-events:none;transition:opacity .7s ease;}
+
+.layer-back{
+  position:absolute;
+  inset:-60px;
+  background-image:url('jewellery.png');
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  filter:blur(24px) brightness(.5) saturate(1.15);
+  transform:scale(1.15);
+  will-change:transform;
+}
+@media(min-width:640px){
+  .layer-back{background-size:cover;filter:blur(34px) brightness(.45) saturate(1.2);}
+}
+
+.layer-front{
+  position:absolute;
+  inset:0;
+  background-image:url('jewellery.png');
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  opacity:0;
+  transform:scale(1.02);
+  will-change:transform,opacity;
+  filter:drop-shadow(0 0 60px rgba(212,160,23,.35));
+}
+@media(min-width:640px){.layer-front{background-size:cover;}}
+
+.layer-tint{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(212,160,23,.15) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(10,6,5,.4) 0%, rgba(10,6,5,.88) 75%, #0a0605 100%);
+  pointer-events:none;
+}
+
+#rays, #particles{position:absolute;inset:0;pointer-events:none;}
+#rays{opacity:.6;mix-blend-mode:screen;}
+#particles{z-index:5;}
+
+.hud{
+  position:absolute;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;
+  letter-spacing:.2em;
+  color:var(--gold-bright);
+  text-transform:uppercase;
+  opacity:0;
+  z-index:12;
+  text-shadow:0 0 8px rgba(240,193,75,.7);
+  pointer-events:none;
+}
+.hud.tl{top:14px;left:16px;}
+.hud.tr{top:14px;right:16px;text-align:right;}
+.hud.bl{bottom:14px;left:16px;}
+.hud.br{bottom:14px;right:16px;text-align:right;}
+.hud .dot{
+  display:inline-block;width:5px;height:5px;
+  background:var(--gold-bright);border-radius:50%;
+  margin-right:6px;box-shadow:0 0 8px var(--gold-bright);
+  animation:blink 1.4s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.shockwave{
+  position:absolute;top:50%;left:50%;
+  width:20px;height:20px;margin:-10px 0 0 -10px;
+  border:2px solid rgba(240,193,75,.9);
+  border-radius:50%;opacity:0;z-index:8;pointer-events:none;
+  box-shadow:0 0 40px rgba(240,193,75,.7), inset 0 0 20px rgba(240,193,75,.5);
+}
+
+#openLogo{
+  position:absolute;top:50%;left:50%;
+  width:200px;height:200px;margin:-100px 0 0 -100px;
+  z-index:9;opacity:0;
+  transform:scale(.4) rotateY(180deg);
+  filter:drop-shadow(0 0 50px rgba(212,160,23,.8));
+  object-fit:contain;pointer-events:none;
+}
+@media(min-width:640px){
+  #openLogo{width:260px;height:260px;margin:-130px 0 0 -130px;}
+}
+
+#cineTitle{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Cinzel',serif;font-weight:700;
+  font-size:clamp(24px,7vw,48px);letter-spacing:.14em;
+  color:#fff;text-align:center;opacity:0;z-index:11;
+  text-shadow:0 0 30px rgba(240,193,75,.9), 0 0 60px rgba(212,160,23,.6);
+  white-space:nowrap;pointer-events:none;padding:0 20px;
+}
+
+.flash{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%, rgba(255,217,102,.95), rgba(212,160,23,.6) 40%, transparent 70%);
+  opacity:0;z-index:13;pointer-events:none;
+}
+
+#skipBtn{
+  position:absolute;bottom:26px;right:22px;z-index:20;
+  background:rgba(20,12,7,.75);
+  border:1px solid rgba(240,193,75,.5);
+  color:var(--gold-bright);
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:.18em;
+  padding:9px 16px;border-radius:20px;cursor:pointer;
+  opacity:0;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:opacity .4s ease, background .2s ease;
+  text-transform:uppercase;
+}
+#skipBtn.show{opacity:1;}
+#skipBtn:active{background:rgba(212,160,23,.4);}
+
+/* ============================================================
+   CARD
+   ============================================================ */
+#cardWrap{
+  position:relative;z-index:50;width:100%;
+  padding:10px 12px 40px;
+  text-align:center;font-size:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .7s ease;
+}
+#cardWrap.revealed{opacity:1;pointer-events:auto;}
+
+.card{
+  display:inline-block;text-align:left;vertical-align:top;
+  width:100%;max-width:420px;font-size:14px;
+  background:linear-gradient(180deg, rgba(31,19,11,.94) 0%, rgba(20,12,7,.98) 100%);
+  border:1px solid rgba(240,193,75,.22);
+  border-radius:22px;overflow:hidden;
+  box-shadow:
+    0 30px 80px -20px rgba(0,0,0,.9),
+    0 0 0 1px rgba(240,193,75,.06),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  position:relative;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold-bright),transparent);
+  opacity:.75;
+}
+
+.card-head{
+  padding:34px 22px 26px;text-align:center;
+  background:radial-gradient(ellipse at 50% 0%, rgba(212,160,23,.22) 0%, transparent 65%);
+  position:relative;
+}
+.logo-wrap{
+  position:relative;width:120px;height:120px;
+  margin:0 auto 20px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ring{
+  position:absolute;inset:-6px;border-radius:50%;
+  border:1.5px solid transparent;
+  border-top-color:var(--gold-bright);
+  border-right-color:rgba(240,193,75,.4);
+  animation:spin 9s linear infinite;
+  box-shadow:0 0 22px rgba(240,193,75,.45);
+}
+.ring2{
+  position:absolute;inset:-16px;border-radius:50%;
+  border:1px solid transparent;
+  border-bottom-color:rgba(240,193,75,.35);
+  border-left-color:rgba(240,193,75,.15);
+  animation:spin 15s linear infinite reverse;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.halo{
+  position:absolute;inset:-8px;border-radius:50%;
+  background:radial-gradient(circle, rgba(240,193,75,.4) 0%, transparent 70%);
+  animation:pulse 3s ease-in-out infinite;z-index:-1;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1);opacity:.55;}
+  50%{transform:scale(1.2);opacity:.9;}
+}
+
+.logo-disc{
+  width:100%;height:100%;border-radius:50%;
+  background:radial-gradient(circle, #1a0f08 0%, #0a0605 100%);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  box-shadow:
+    0 0 0 3px rgba(10,6,5,.9),
+    0 0 0 5px rgba(240,193,75,.4),
+    0 10px 30px -8px rgba(212,160,23,.7);
+  position:relative;z-index:2;
+}
+.logo-disc img{
+  width:96%;height:96%;object-fit:contain;
+  filter:drop-shadow(0 0 10px rgba(240,193,75,.4));
+}
+
+.biz-name{
+  font-family:'Cinzel',serif;font-weight:600;
+  font-size:26px;line-height:1.15;letter-spacing:.06em;
+  margin-bottom:6px;
+  background:linear-gradient(180deg,#fff8e0 0%, #f0c14b 50%, #d4a017 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 2px 20px rgba(212,160,23,.25);
+}
+.biz-name .small{
+  display:block;font-size:12px;letter-spacing:.34em;
+  margin-top:5px;font-weight:400;opacity:.85;
+}
+
+.biz-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:13px;font-style:italic;color:var(--silver);
+  letter-spacing:.06em;margin-top:10px;
+}
+.biz-sub .loc{color:var(--gold-bright);font-weight:500;font-style:normal;}
+
+.section{
+  padding:18px 20px;border-top:1px solid rgba(240,193,75,.1);
+  animation:fadeUp .6s ease both;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(12px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.sec-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.26em;text-transform:uppercase;
+  color:var(--gold-bright);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-label::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg, rgba(240,193,75,.35), transparent);
+}
+
+.contact-card{
+  background:rgba(212,160,23,.08);
+  border:1px solid rgba(240,193,75,.18);
+  border-radius:14px;padding:16px 16px 15px;
+}
+.c-name{
+  font-family:'Cinzel',serif;font-size:18px;font-weight:600;
+  letter-spacing:.06em;
+  background:linear-gradient(180deg,#fff8e0 0%, #f0c14b 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;margin-bottom:4px;
+}
+.c-role{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--silver);letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:14px;
+}
+
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 8px;border-radius:11px;
+  font-size:12.5px;font-weight:600;letter-spacing:.03em;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:transform .15s ease, box-shadow .2s ease;
+  font-family:'Inter',sans-serif;
+}
+.btn:active{transform:scale(.97);}
+.btn svg{width:15px;height:15px;flex-shrink:0;}
+
+.btn-call{
+  background:linear-gradient(180deg,#f0c14b 0%, #d4a017 100%);
+  color:#1a0f08;
+  box-shadow:0 6px 18px -6px rgba(212,160,23,.8), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.btn-wa{
+  background:linear-gradient(180deg,#2ee06f 0%, #128C4A 100%);
+  color:#fff;
+  box-shadow:0 6px 18px -6px rgba(18,140,74,.8), inset 0 1px 0 rgba(255,255,255,.25);
+}
+
+.btn-full{
+  width:100%;
+  background:linear-gradient(180deg, rgba(212,160,23,.22) 0%, rgba(212,160,23,.1) 100%);
+  border:1px solid rgba(240,193,75,.3);
+  color:var(--cream);text-decoration:none;
+}
+.btn-full:active{background:rgba(212,160,23,.35);}
+
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.svc-item{
+  padding:13px 10px;
+  background:rgba(212,160,23,.08);
+  border:1px solid rgba(240,193,75,.14);
+  border-radius:11px;font-size:12px;color:var(--cream);
+  line-height:1.35;text-align:center;font-weight:500;
+  letter-spacing:.02em;
+  transition:background .2s ease, border-color .2s ease;
+}
+.svc-item:active{
+  background:rgba(212,160,23,.22);
+  border-color:rgba(240,193,75,.4);
+}
+.svc-item .ico{
+  display:block;font-size:16px;margin-bottom:5px;
+  filter:drop-shadow(0 0 6px rgba(240,193,75,.4));
+}
+
+.share-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.share-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:13px 6px;
+  background:rgba(212,160,23,.08);
+  border:1px solid rgba(240,193,75,.16);
+  border-radius:11px;color:var(--cream);
+  font-size:10px;font-weight:500;letter-spacing:.06em;
+  cursor:pointer;transition:background .2s ease, transform .15s ease;
+  font-family:'Inter',sans-serif;text-transform:uppercase;
+}
+.share-btn:active{transform:scale(.96);background:rgba(212,160,23,.25);}
+.share-btn svg{width:19px;height:19px;color:var(--gold-bright);}
+.share-btn.copied{color:#6ee08a;}
+.share-btn.copied svg{color:#6ee08a;}
+
+.footer{
+  padding:20px 20px 24px;text-align:center;
+  border-top:1px solid rgba(240,193,75,.1);
+  background:rgba(10,6,5,.5);
+}
+.footer .tagline{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:14px;
+  color:var(--gold-bright);margin-bottom:12px;
+  letter-spacing:.04em;
+}
+.footer .vaan{
+  font-family:'JetBrains Mono',monospace;font-size:9.5px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--silver);text-decoration:none;opacity:.75;
+  transition:opacity .2s ease, color .2s ease;
+}
+.footer .vaan:hover{opacity:1;color:var(--gold-bright);}
+.footer .vaan strong{color:var(--gold-bright);font-weight:600;}
+
+@media(max-width:360px){
+  .biz-name{font-size:22px;}
+  .biz-name .small{font-size:11px;}
+  .btn-row{grid-template-columns:1fr;}
+  .share-btn{font-size:9px;}
+}
+</style>
+</head>
+<body class="locked">
+
+<div id="stage">
+  <div class="layer-back"></div>
+  <div class="layer-front" id="layerFront"></div>
+  <div class="layer-tint"></div>
+
+  <canvas id="rays"></canvas>
+  <canvas id="particles"></canvas>
+
+  <div class="hud tl" id="hudTL"><span class="dot"></span>MALHOTRA · JEWELLERS</div>
+  <div class="hud tr" id="hudTR">FINE JEWELLERY · SINCE</div>
+  <div class="hud bl" id="hudBL">GOLD · DIAMOND · SILVER</div>
+  <div class="hud br" id="hudBR">CRAFTED WITH LOVE</div>
+
+  <div class="shockwave" id="shockwave"></div>
+
+  <img id="openLogo" src="malhotralogo.png" alt="" />
+
+  <div id="cineTitle">MALHOTRA</div>
+
+  <div class="flash" id="flash"></div>
+
+  <button id="skipBtn" type="button">Skip ›</button>
+</div>
+
+<div id="cardWrap">
+  <div class="card">
+
+    <div class="card-head">
+      <div class="logo-wrap">
+        <div class="halo"></div>
+        <div class="ring"></div>
+        <div class="ring2"></div>
+        <div class="logo-disc">
+          <img src="malhotralogo.png" alt="Malhotra Jewellers" />
+        </div>
+      </div>
+      <div class="biz-name">
+        Malhotra
+        <span class="small">JEWELLERS</span>
+      </div>
+      <div class="biz-sub">Fine Jewellery · <span class="loc">Karnal</span></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-label">Get in Touch</div>
+      <div class="contact-card">
+        <div class="c-name">Malhotra Jewellers</div>
+        <div class="c-role">Owner</div>
+        <div class="btn-row">
+          <a class="btn btn-call" href="tel:+918950716200">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a class="btn btn-wa" href="https://wa.me/918950716200?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20your%20jewellery%20collection." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sec-label">Our Collections</div>
+      <div class="svc-grid">
+        <div class="svc-item"><span class="ico">💍</span>Gold Jewellery</div>
+        <div class="svc-item"><span class="ico">💎</span>Diamond Jewellery</div>
+        <div class="svc-item"><span class="ico">📿</span>Silver Jewellery</div>
+        <div class="svc-item"><span class="ico">👰</span>Bridal Sets</div>
+        <div class="svc-item"><span class="ico">✨</span>Necklaces</div>
+        <div class="svc-item"><span class="ico">🪔</span>Earrings &amp; Bangles</div>
+        <div class="svc-item"><span class="ico">💫</span>Rings &amp; Pendants</div>
+        <div class="svc-item"><span class="ico">🎁</span>Custom Designs</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sec-label">Share Card</div>
+      <div class="share-row">
+        <button class="share-btn" id="btnShare" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Share
+        </button>
+        <button class="share-btn" id="btnVcf" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Save
+        </button>
+        <button class="share-btn" id="btnCopy" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="tagline">"Timeless Jewellery, Trusted Since Generations"</div>
+      <a class="vaan" href="https://vaanconsultancy.in" target="_blank" rel="noopener">
+        Powered by <strong>VAAN</strong>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  const stage = document.getElementById('stage');
+  const layerFront = document.getElementById('layerFront');
+  const openLogo = document.getElementById('openLogo');
+  const cineTitle = document.getElementById('cineTitle');
+  const flash = document.getElementById('flash');
+  const shockwave = document.getElementById('shockwave');
+  const skipBtn = document.getElementById('skipBtn');
+  const cardWrap = document.getElementById('cardWrap');
+  const body = document.body;
+
+  let skipped = false, stageRemoved = false;
+
+  function doSkip(){
+    if(skipped) return;
+    skipped = true;
+    if(window.gsap) gsap.globalTimeline.clear();
+    stage.style.transition = 'opacity .5s ease';
+    stage.style.opacity = '0';
+    setTimeout(() => {
+      if(!stageRemoved){ stage.remove(); stageRemoved = true; }
+    }, 520);
+    body.classList.remove('locked');
+    cardWrap.classList.add('revealed');
+  }
+  window.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && !skipped && skipBtn.classList.contains('show')) doSkip();
+  });
+  stage.addEventListener('click', e => {
+    if(e.target === skipBtn) return;
+    if(!skipped && skipBtn.classList.contains('show')) doSkip();
+  });
+  skipBtn.addEventListener('click', e => { e.stopPropagation(); doSkip(); });
+
+  /* CANVAS */
+  const pCanvas = document.getElementById('particles');
+  const pCtx = pCanvas.getContext('2d');
+  const rCanvas = document.getElementById('rays');
+  const rCtx = rCanvas.getContext('2d');
+  let W = 0, H = 0;
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    pCanvas.width = W * DPR; pCanvas.height = H * DPR;
+    pCanvas.style.width = W + 'px'; pCanvas.style.height = H + 'px';
+    pCtx.setTransform(DPR,0,0,DPR,0,0);
+    rCanvas.width = W * DPR; rCanvas.height = H * DPR;
+    rCanvas.style.width = W + 'px'; rCanvas.style.height = H + 'px';
+    rCtx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  /* SHAPE: diamond/gem outline (jeweller theme) */
+  const targets = [];
+  const N = 160;
+  for(let i=0;i<N;i++){
+    const t = (i/N) * Math.PI * 2;
+    // diamond shape: top flat, sides taper to point at bottom
+    const a = t - Math.PI/2;
+    let x = Math.cos(a);
+    let y = Math.sin(a);
+    // flatten top
+    if(y < -0.6) y = -0.6;
+    // taper bottom
+    if(y > 0){
+      const k = y;
+      x *= (1 - 0.85 * k);
+    }
+    targets.push({x: x * 0.75, y: y * 0.85});
+  }
+  // inner diamond
+  const innerN = 100;
+  for(let i=0;i<innerN;i++){
+    const t = (i/innerN) * Math.PI * 2;
+    const a = t - Math.PI/2;
+    let x = Math.cos(a);
+    let y = Math.sin(a);
+    if(y < -0.5) y = -0.5;
+    if(y > 0){
+      const k = y;
+      x *= (1 - 0.85 * k);
+    }
+    targets.push({x: x * 0.55, y: y * 0.65});
+  }
+
+  const TOTAL = targets.length;
+  const particles = [];
+  const colors = ['#ffd966','#f0c14b','#d4a017','#a67c0f','#fff8e0','#f5ede0'];
+  const PCOUNT = Math.min(TOTAL, window.innerWidth < 640 ? 180 : 300);
+
+  for(let i=0;i<PCOUNT;i++){
+    const tgt = targets[i % targets.length];
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 1.3 + Math.random() * 1.4;
+    particles.push({
+      x: Math.cos(angle)*dist, y: Math.sin(angle)*dist,
+      sx: Math.cos(angle)*dist, sy: Math.sin(angle)*dist,
+      tx: tgt.x, ty: tgt.y,
+      size: 1 + Math.random()*2.4,
+      color: colors[(Math.random()*colors.length)|0],
+      delay: Math.random()*0.35,
+      twinkle: Math.random()*Math.PI*2
+    });
+  }
+
+  let assemblyProgress = 0, assemblyActive = false, particleAlpha = 1, time = 0;
+
+  function drawParticles(){
+    if(!stage.parentNode) return;
+    pCtx.clearRect(0,0,W,H);
+    const cx = W/2, cy = H/2;
+    const scale = Math.min(W, H) * 0.34;
+    time += 0.016;
+    if(assemblyActive){
+      assemblyProgress += 0.012;
+      if(assemblyProgress > 1) assemblyProgress = 1;
+    }
+    particles.forEach(p => {
+      if(assemblyActive){
+        const local = Math.max(0, Math.min(1, (assemblyProgress - p.delay) / 0.7));
+        const e = 1 - Math.pow(1 - local, 3);
+        p.x = p.sx + (p.tx - p.sx) * e;
+        p.y = p.sy + (p.ty - p.sy) * e;
+      } else {
+        p.x += Math.sin(time + p.twinkle) * 0.0008;
+        p.y += Math.cos(time + p.twinkle) * 0.0008;
+      }
+      const px = cx + p.x * scale;
+      const py = cy + p.y * scale;
+      const tw = 0.6 + 0.4 * Math.sin(time*3 + p.twinkle);
+      const alpha = particleAlpha * tw;
+      const g = pCtx.createRadialGradient(px, py, 0, px, py, p.size * 4);
+      g.addColorStop(0, p.color);
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      pCtx.globalAlpha = alpha * 0.45;
+      pCtx.fillStyle = g;
+      pCtx.beginPath(); pCtx.arc(px, py, p.size * 4, 0, Math.PI*2); pCtx.fill();
+      pCtx.globalAlpha = alpha;
+      pCtx.fillStyle = p.color;
+      pCtx.beginPath(); pCtx.arc(px, py, p.size, 0, Math.PI*2); pCtx.fill();
+    });
+    pCtx.globalAlpha = 1;
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  /* RAYS */
+  const rays = [];
+  for(let i=0;i<5;i++){
+    rays.push({
+      x: W * (0.55 + Math.random()*0.45),
+      y: -50,
+      len: H * (0.85 + Math.random()*0.5),
+      w: 50 + Math.random()*90,
+      angle: Math.PI/4 + (Math.random()-0.5)*0.4,
+      alpha: 0.05 + Math.random()*0.07,
+      speed: 0.0008 + Math.random()*0.0015,
+      phase: Math.random()*Math.PI*2
+    });
+  }
+  function drawRays(){
+    if(!stage.parentNode) return;
+    rCtx.clearRect(0,0,W,H);
+    const t = performance.now() * 0.001;
+    rays.forEach(r => {
+      rCtx.save();
+      rCtx.translate(r.x, r.y);
+      rCtx.rotate(r.angle);
+      const a = r.alpha * (0.6 + 0.4*Math.sin(t*r.speed*1000 + r.phase));
+      const grad = rCtx.createLinearGradient(0,0,0,r.len);
+      grad.addColorStop(0, `rgba(255,217,102,${a})`);
+      grad.addColorStop(0.5, `rgba(240,193,75,${a*0.5})`);
+      grad.addColorStop(1, 'rgba(255,217,102,0)');
+      rCtx.fillStyle = grad;
+      rCtx.beginPath();
+      rCtx.moveTo(-r.w/2, 0);
+      rCtx.lineTo(r.w/2, 0);
+      rCtx.lineTo(r.w*1.6, r.len);
+      rCtx.lineTo(-r.w*1.6, r.len);
+      rCtx.closePath();
+      rCtx.fill();
+      rCtx.restore();
+    });
+    requestAnimationFrame(drawRays);
+  }
+  drawRays();
+
+  /* PARALLAX */
+  const layerBack = document.querySelector('.layer-back');
+  let mouseX = 0, mouseY = 0;
+  function applyParallax(){
+    if(stageRemoved) return;
+    const tx = mouseX * 16, ty = mouseY * 12;
+    layerBack.style.transform = `translate(${-tx}px, ${-ty}px) scale(1.18)`;
+    layerFront.style.transform = `translate(${tx*0.4}px, ${ty*0.4}px) scale(1.04)`;
+    requestAnimationFrame(applyParallax);
+  }
+  window.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / W - 0.5) * 2;
+    mouseY = (e.clientY / H - 0.5) * 2;
+  });
+  window.addEventListener('deviceorientation', e => {
+    if(e.gamma != null) mouseX = Math.max(-1, Math.min(1, e.gamma / 30));
+    if(e.beta != null) mouseY = Math.max(-1, Math.min(1, (e.beta - 45) / 40));
+  });
+  applyParallax();
+
+  /* TIMELINE */
+  function runTimeline(){
+    if(!window.gsap) return;
+    const tl = gsap.timeline({
+      onComplete: () => {
+        stage.classList.add('hidden');
+        body.classList.remove('locked');
+        cardWrap.classList.add('revealed');
+        setTimeout(() => {
+          if(!stageRemoved){ stage.remove(); stageRemoved = true; }
+        }, 900);
+      }
+    });
+    gsap.set(stage, {opacity:1});
+
+    tl.fromTo(layerBack, {scale:1.3, opacity:0}, {scale:1.18, opacity:1, duration:1.3, ease:'power2.out'}, 0.3);
+    tl.to(layerFront, {opacity:1, scale:1.04, duration:1.1, ease:'power2.out'}, 1.4);
+    tl.to(['#hudTL','#hudTR','#hudBL','#hudBR'], {opacity:1, duration:0.7, stagger:0.08}, 1.0);
+    tl.call(() => skipBtn.classList.add('show'), null, 1.9);
+    tl.to(layerFront, {x:'2%', y:'1%', duration:0.7, ease:'sine.inOut'}, 2.0);
+    tl.to(layerFront, {x:'-2%', duration:0.7, ease:'sine.inOut'}, 2.6);
+    tl.call(() => {
+      particles.forEach(p => {
+        const a = Math.random() * Math.PI * 2;
+        const d = 1.6 + Math.random() * 1.6;
+        p.sx = Math.cos(a) * d; p.sy = Math.sin(a) * d;
+        p.x = p.sx; p.y = p.sy;
+      });
+    }, null, 2.7);
+    tl.call(() => {
+      gsap.fromTo(shockwave,
+        {opacity:0.95, scale:0, marginLeft:-10, marginTop:-10},
+        {opacity:0, scale:42, duration:1.5, ease:'power2.out'});
+    }, null, 2.85);
+    tl.to(layerFront, {scale:1.35, duration:1.0, ease:'power2.in'}, 2.9);
+    tl.to(layerBack, {scale:1.5, duration:1.0, ease:'power2.in'}, 2.9);
+    tl.call(() => { assemblyActive = true; }, null, 3.5);
+    tl.to(openLogo, {opacity:1, scale:1, rotateY:0, duration:1.2, ease:'back.out(1.6)'}, 3.7);
+    tl.to(layerFront, {scale:1.05, opacity:0.35, duration:0.7, ease:'power2.out'}, 4.4);
+    tl.to(layerBack, {scale:1.2, opacity:0.5, duration:0.7, ease:'power2.out'}, 4.4);
+    tl.fromTo(cineTitle,
+      {opacity:0, scale:0.9, letterSpacing:'0.4em'},
+      {opacity:1, scale:1, letterSpacing:'0.14em', duration:0.8, ease:'power2.out'}, 4.7);
+    tl.to(cineTitle, {opacity:0, duration:0.5, ease:'power2.in'}, 5.4);
+    tl.to([layerFront, layerBack], {opacity:0.15, duration:0.6, ease:'power2.inOut'}, 5.5);
+    tl.to(openLogo, {
+      filter:'drop-shadow(0 0 70px rgba(255,217,102,1)) brightness(1.35)',
+      duration:0.35, yoyo:true, repeat:1, ease:'power2.inOut'}, 5.8);
+    tl.to({}, {
+      duration:0.6,
+      onUpdate: function(){ particleAlpha = 1 - this.progress(); }
+    }, 6.5);
+    tl.to(openLogo, {scale:1.7, opacity:0, duration:0.55, ease:'power2.in'}, 6.7);
+    tl.to(flash, {opacity:1, duration:0.15, ease:'power2.in'}, 6.85);
+    tl.to(flash, {opacity:0, duration:0.45, ease:'power2.out'}, 7.05);
+    tl.call(() => {
+      stage.classList.add('hidden');
+      body.classList.remove('locked');
+      cardWrap.classList.add('revealed');
+    }, null, 7.2);
+  }
+  runTimeline();
+
+  /* SHARE / COPY / VCF */
+  const CARD_URL = window.location.href;
+
+  document.getElementById('btnShare').addEventListener('click', async () => {
+    const shareData = {
+      title: 'Malhotra Jewellers',
+      text: 'Malhotra Jewellers · Fine Jewellery',
+      url: CARD_URL
+    };
+    try{
+      if(navigator.share){ await navigator.share(shareData); }
+      else { await navigator.clipboard.writeText(CARD_URL); flashCopied('btnShare'); }
+    }catch(e){}
+  });
+
+  document.getElementById('btnCopy').addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(CARD_URL);
+      flashCopied('btnCopy');
+    }catch(e){
+      const ta = document.createElement('textarea');
+      ta.value = CARD_URL;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      flashCopied('btnCopy');
+    }
+  });
+
+  function flashCopied(id){
+    const btn = document.getElementById(id);
+    const orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = orig;
+    }, 1800);
+  }
+
+  document.getElementById('btnVcf').addEventListener('click', () => {
+    const vcf = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      'N:Malhotra;Jewellers;;;',
+      'FN:Malhotra Jewellers',
+      'ORG:Malhotra Jewellers',
+      'TITLE:Fine Jewellery',
+      'TEL;TYPE=CELL,VOICE:+918950716200',
+      'URL:' + CARD_URL,
+      'NOTE:Malhotra Jewellers — Fine Gold, Diamond & Silver Jewellery. Custom designs available.',
+      'END:VCARD'
+    ].join('\r\n');
+    const blob = new Blob([vcf], {type:'text/vcard;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Malhotra-Jewellers.vcf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+
+})();
+</script>
+</body>
+</html>
