@@ -392,17 +392,22 @@ body.locked{overflow:hidden;height:100vh;}
 .products-toggle.active svg { transform: rotate(180deg); }
 
 .products-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease-out;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s ease-out;
 }
 .products-content.open {
-  max-height: 800px;
-  transition: max-height 0.6s ease-in;
+  grid-template-rows: 1fr;
+}
+.products-content-inner {
+  overflow: hidden;
+  min-height: 0;
 }
 
 .svc-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:9px;
+  display:grid;
+  grid-template-columns: 1fr 1fr; /* Forces 2 per line on all devices */
+  gap:9px;
   padding-top: 12px;
 }
 .svc-item{
@@ -464,7 +469,6 @@ body.locked{overflow:hidden;height:100vh;}
 @media(max-width:360px){
   .btn-row{grid-template-columns:1fr;}
   .share-btn{font-size:9px;}
-  .svc-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -545,8 +549,8 @@ body.locked{overflow:hidden;height:100vh;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         Yashsoni9034@gmail.com
       </a>
-    </div> 
-    
+    </div>
+
     <div class="section">
       <div class="sec-label">Follow Us</div>
       <a class="btn btn-full" href="https://www.instagram.com/yash.soni0001" target="_blank" rel="noopener" style="text-decoration:none; background:linear-gradient(135deg,#feda75 0%, #fa7e1e 25%, #d62976 55%, #962fbf 80%, #4f5bd5 100%); color:#fff; border:none;">
@@ -565,21 +569,23 @@ body.locked{overflow:hidden;height:100vh;}
       </button>
 
       <div class="products-content" id="productsContent">
-        <div class="svc-grid">
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Doors." target="_blank" class="svc-item"><span class="ico">🚪</span>Doors</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Handles." target="_blank" class="svc-item"><span class="ico">🚪</span>Handles</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Beds." target="_blank" class="svc-item"><span class="ico">🛏️</span>Beds</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Sofa." target="_blank" class="svc-item"><span class="ico">🛋️</span>Sofa</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20LED%20Panel." target="_blank" class="svc-item"><span class="ico">💡</span>LED Panel</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Kitchen." target="_blank" class="svc-item"><span class="ico">🍳</span>Kitchen</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Wooden%20Blockboards." target="_blank" class="svc-item"><span class="ico">🪵</span>Wooden Blockboards</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Plywood." target="_blank" class="svc-item"><span class="ico">🪵</span>Plywood</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20MDF." target="_blank" class="svc-item"><span class="ico">🪵</span>MDF</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20HDHMR." target="_blank" class="svc-item"><span class="ico">🪵</span>HDHMR</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Sun%20Mica." target="_blank" class="svc-item"><span class="ico">✨</span>Sun Mica</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Hardware." target="_blank" class="svc-item"><span class="ico">🔧</span>Hardware</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20PVC." target="_blank" class="svc-item"><span class="ico">📐</span>PVC</a>
-          <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Louvers." target="_blank" class="svc-item"><span class="ico">🪟</span>Louvers</a>
+        <div class="products-content-inner">
+          <div class="svc-grid">
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Doors." target="_blank" class="svc-item"><span class="ico">🚪</span>Doors</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Handles." target="_blank" class="svc-item"><span class="ico">🚪</span>Handles</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Beds." target="_blank" class="svc-item"><span class="ico">🛏️</span>Beds</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Sofa." target="_blank" class="svc-item"><span class="ico">🛋️</span>Sofa</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20LED%20Panel." target="_blank" class="svc-item"><span class="ico">💡</span>LED Panel</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Kitchen." target="_blank" class="svc-item"><span class="ico">🍳</span>Kitchen</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Wooden%20Blockboards." target="_blank" class="svc-item"><span class="ico">🪵</span>Wooden Blockboards</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Plywood." target="_blank" class="svc-item"><span class="ico">🪵</span>Plywood</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20MDF." target="_blank" class="svc-item"><span class="ico">🪵</span>MDF</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20HDHMR." target="_blank" class="svc-item"><span class="ico">🪵</span>HDHMR</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Sun%20Mica." target="_blank" class="svc-item"><span class="ico">✨</span>Sun Mica</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Hardware." target="_blank" class="svc-item"><span class="ico">🔧</span>Hardware</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20PVC." target="_blank" class="svc-item"><span class="ico">📐</span>PVC</a>
+            <a href="https://wa.me/919034200066?text=Hi%2C%20I%20want%20to%20enquire%20about%20Louvers." target="_blank" class="svc-item"><span class="ico">🪟</span>Louvers</a>
+          </div>
         </div>
       </div>
     </div>
